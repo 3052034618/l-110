@@ -1,0 +1,364 @@
+{
+  "info": {
+    "name": "碳中和管理服务 API",
+    "description": "面向企业内部系统的碳预算与减排任务统一能力平台接口集合",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "version": "1.0.0"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080/api",
+      "type": "string"
+    },
+    {
+      "key": "year",
+      "value": "2024",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "0. 健康检查",
+      "item": [
+        {
+          "name": "健康检查",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/health"
+          }
+        },
+        {
+          "name": "服务信息",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/info"
+          }
+        }
+      ]
+    },
+    {
+      "name": "1. 预算管理",
+      "item": [
+        {
+          "name": "1.1 创建年度预算",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"budgetName\": \"{{year}}年度范围1总预算\",\n  \"orgId\": \"ORG001\",\n  \"orgName\": \"集团总部\",\n  \"budgetYear\": {{year}},\n  \"emissionScope\": \"SCOPE_1\",\n  \"totalBudget\": 12000.00,\n  \"warningThreshold\": 80.00,\n  \"dangerThreshold\": 95.00,\n  \"description\": \"全公司直接碳排放年度预算\"\n}"
+            },
+            "url": "{{baseUrl}}/budgets"
+          }
+        },
+        {
+          "name": "1.2 创建月度预算",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"budgetName\": \"{{year}}年6月预算\",\n  \"orgId\": \"ORG001\",\n  \"orgName\": \"集团总部\",\n  \"budgetYear\": {{year}},\n  \"budgetMonth\": 6,\n  \"emissionScope\": \"SCOPE_1\",\n  \"totalBudget\": 1000.00,\n  \"warningThreshold\": 80.00,\n  \"dangerThreshold\": 95.00,\n  \"description\": \"月度碳排放控制预算\"\n}"
+            },
+            "url": "{{baseUrl}}/budgets"
+          }
+        },
+        {
+          "name": "1.3 查询预算详情",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/budgets/1"
+          }
+        },
+        {
+          "name": "1.4 分页查询预算",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"orgId\": \"ORG001\",\n  \"budgetYear\": {{year}},\n  \"emissionScope\": \"SCOPE_1\",\n  \"pageNum\": 1,\n  \"pageSize\": 10\n}"
+            },
+            "url": "{{baseUrl}}/budgets/query"
+          }
+        },
+        {
+          "name": "1.5 按组织年度查询",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/budgets/org/ORG001/year/{{year}}"
+          }
+        },
+        {
+          "name": "1.6 按组织月度查询",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/budgets/org/ORG001/year/{{year}}/month/6"
+          }
+        },
+        {
+          "name": "1.7 预算执行进度",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/budgets/1/progress"
+          }
+        },
+        {
+          "name": "1.8 创建预算分解",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"budgetId\": 1,\n  \"deptId\": \"DEPT001\",\n  \"deptName\": \"生产一部\",\n  \"targetReduction\": 5000.00,\n  \"responsibilityPerson\": \"张三\",\n  \"remark\": \"生产车间减排主责部门\"\n}"
+            },
+            "url": "{{baseUrl}}/budgets/decomposition"
+          }
+        },
+        {
+          "name": "1.9 查询预算分解列表",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/budgets/1/decomposition"
+          }
+        },
+        {
+          "name": "1.10 提交预算审批",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/budgets/1/submit"
+          }
+        }
+      ]
+    },
+    {
+      "name": "2. 任务管理",
+      "item": [
+        {
+          "name": "2.1 创建减排任务",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"taskName\": \"锅炉低氮燃烧改造项目\",\n  \"budgetId\": 1,\n  \"decompositionId\": 1,\n  \"orgId\": \"ORG001\",\n  \"orgName\": \"集团总部\",\n  \"deptId\": \"DEPT001\",\n  \"deptName\": \"生产一部\",\n  \"category\": \"ENERGY_SAVING\",\n  \"estimatedReduction\": 2000.00,\n  \"startDate\": \"{{year}}-01-15\",\n  \"endDate\": \"{{year}}-12-31\",\n  \"responsibilityPerson\": \"张三\",\n  \"description\": \"对3号锅炉进行低氮燃烧器改造\",\n  \"measureDetail\": \"更换低氮燃烧器4台，优化空燃比控制\"\n}"
+            },
+            "url": "{{baseUrl}}/tasks"
+          }
+        },
+        {
+          "name": "2.2 查询任务详情",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/tasks/5"
+          }
+        },
+        {
+          "name": "2.3 分页查询任务",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"orgId\": \"ORG001\",\n  \"deptId\": \"DEPT001\",\n  \"category\": \"ENERGY_SAVING\",\n  \"status\": \"IN_PROGRESS\",\n  \"pageNum\": 1,\n  \"pageSize\": 10\n}"
+            },
+            "url": "{{baseUrl}}/tasks/query"
+          }
+        },
+        {
+          "name": "2.4 按预算查询任务",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/tasks/budget/1"
+          }
+        },
+        {
+          "name": "2.5 按负责人查询任务",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/tasks/responsibility/张三"
+          }
+        },
+        {
+          "name": "2.6 上报任务进度",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"taskId\": 5,\n  \"reportPeriod\": \"{{year}}-Q2\",\n  \"periodReduction\": 450.00,\n  \"progressDesc\": \"已完成锅炉停炉检修，燃烧器设备已到货\",\n  \"problemDesc\": \"受雨季影响，安装进度略有延迟\",\n  \"nextPlan\": \"预计7月中旬完成安装调试\",\n  \"reporter\": \"张三\"\n}"
+            },
+            "url": "{{baseUrl}}/tasks/progress"
+          }
+        },
+        {
+          "name": "2.7 查询任务进度历史",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/tasks/5/progress"
+          }
+        },
+        {
+          "name": "2.8 添加任务附件",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"taskId\": 5,\n  \"fileName\": \"改造方案.pdf\",\n  \"filePath\": \"/attachments/plan.pdf\",\n  \"fileSize\": 2048000,\n  \"fileType\": \"application/pdf\",\n  \"remark\": \"技术改造方案文档\"\n}"
+            },
+            "url": "{{baseUrl}}/tasks/attachment"
+          }
+        },
+        {
+          "name": "2.9 查询任务附件",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/tasks/5/attachments"
+          }
+        }
+      ]
+    },
+    {
+      "name": "3. 预警管理",
+      "item": [
+        {
+          "name": "3.1 分页查询预警",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"orgId\": \"ORG001\",\n  \"isHandled\": false,\n  \"pageNum\": 1,\n  \"pageSize\": 10\n}"
+            },
+            "url": "{{baseUrl}}/warnings/query"
+          }
+        },
+        {
+          "name": "3.2 查询预算相关预警",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/warnings/budget/1"
+          }
+        },
+        {
+          "name": "3.3 查询任务相关预警",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/warnings/task/5"
+          }
+        },
+        {
+          "name": "3.4 组织未处理预警",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/warnings/org/ORG001/unhandled"
+          }
+        },
+        {
+          "name": "3.5 处理预警",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"handleRemark\": \"已关注，正在协调资源加快进度\"\n}"
+            },
+            "url": "{{baseUrl}}/warnings/1/handle"
+          }
+        }
+      ]
+    },
+    {
+      "name": "4. 报表管理",
+      "item": [
+        {
+          "name": "4.1 年度汇总报表",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/reports/yearly?orgId=ORG001&year={{year}}"
+          }
+        },
+        {
+          "name": "4.2 预算进度报表",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/reports/budget-progress?orgId=ORG001&year={{year}}"
+          }
+        },
+        {
+          "name": "4.3 导出年度报告",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/reports/yearly/export?orgId=ORG001&year={{year}}"
+          }
+        }
+      ]
+    },
+    {
+      "name": "5. 待办与审批",
+      "item": [
+        {
+          "name": "5.1 查询待办列表",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"assignee\": \"admin\",\n  \"isRead\": false,\n  \"pageNum\": 1,\n  \"pageSize\": 10\n}"
+            },
+            "url": "{{baseUrl}}/todos/query"
+          }
+        },
+        {
+          "name": "5.2 待办统计",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/todos/statistics?assignee=admin"
+          }
+        },
+        {
+          "name": "5.3 标记待办已读",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/todos/1/read"
+          }
+        },
+        {
+          "name": "5.4 标记待办完成",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/todos/1/complete"
+          }
+        },
+        {
+          "name": "5.5 我的待审批",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/approvals/pending?approver=admin"
+          }
+        },
+        {
+          "name": "5.6 处理审批",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"businessId\": 1,\n  \"businessType\": \"BUDGET\",\n  \"approvalStatus\": \"APPROVED\",\n  \"approver\": \"admin\",\n  \"approverName\": \"系统管理员\",\n  \"approvalRemark\": \"同意，数据合理\"\n}"
+            },
+            "url": "{{baseUrl}}/approvals/1/process"
+          }
+        },
+        {
+          "name": "5.7 查询审批记录",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/approvals?businessType=BUDGET&businessId=1"
+          }
+        }
+      ]
+    }
+  ]
+}
