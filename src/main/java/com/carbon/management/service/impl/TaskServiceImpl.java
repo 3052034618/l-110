@@ -268,7 +268,6 @@ public class TaskServiceImpl implements TaskService {
         }
         List<EmissionTask> relatedTasks = taskRepository.findByBudgetId(task.getBudgetId());
         BigDecimal totalUsed = relatedTasks.stream()
-                .filter(t -> t.getEmissionScope() == null || t.getEmissionScope().equals(budget.getEmissionScope()) || true)
                 .map(EmissionTask::getActualReduction)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
         budget.setUsedAmount(totalUsed);
@@ -339,6 +338,9 @@ public class TaskServiceImpl implements TaskService {
             if (dto.getStatus() != null) {
                 predicates.add(cb.equal(root.get("status"), dto.getStatus()));
             }
+            if (dto.getEmissionScope() != null) {
+                predicates.add(cb.equal(root.get("emissionScope"), dto.getEmissionScope()));
+            }
             if (dto.getResponsibilityPerson() != null && !dto.getResponsibilityPerson().isEmpty()) {
                 predicates.add(cb.equal(root.get("responsibilityPerson"), dto.getResponsibilityPerson()));
             }
@@ -363,6 +365,9 @@ public class TaskServiceImpl implements TaskService {
         BeanUtils.copyProperties(task, vo);
         vo.setCategoryDesc(task.getCategory().getDesc());
         vo.setStatusDesc(task.getStatus().getDesc());
+        if (task.getEmissionScope() != null) {
+            vo.setEmissionScopeDesc(task.getEmissionScope().getDesc());
+        }
         vo.setProgressList(getProgressByTaskId(task.getId()));
         vo.setAttachmentList(getAttachmentsByTaskId(task.getId()));
         return vo;

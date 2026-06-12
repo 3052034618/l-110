@@ -1,0 +1,281 @@
+#############################################################
+### 碳中和管理服务 - API 测试集合
+### 在 IntelliJ IDEA 或 VS Code（装 REST Client 插件）中
+### 点击每个请求前的绿色三角即可运行
+#############################################################
+
+@baseUrl = http://localhost:8080/api
+
+###
+### ═══════════════════════════════════════════
+### 0. 基础接口
+### ════════════════════════════════════════
+###
+
+# 健康检查
+GET {{baseUrl}}/health
+
+###
+
+# Swagger文档首页（浏览器打开）
+# http://localhost:8080/api/doc.html
+
+###
+
+###
+### ════════════════════════════════════════
+### 主流程 6 大接口（按顺序执行）
+### ════════════════════════════════════════
+###
+
+### 1. 创建年度预算（主流程第1步）
+POST {{baseUrl}}/budgets
+Content-Type: application/json
+
+{
+  "budgetName": "2024年度范围1总预算",
+  "orgId": "ORG001",
+  "orgName": "集团总部",
+  "budgetYear": 2024,
+  "emissionScope": "SCOPE_1",
+  "totalBudget": 12000.00,
+  "warningThreshold": 80.00,
+  "dangerThreshold": 95.00,
+  "description": "全公司直接碳排放年度预算总额度12000吨"
+}
+
+> {% client.global.set("budgetId", response.body.data); %}
+
+###
+
+### 2. 分解预算到部门（主流程第2步）
+POST {{baseUrl}}/budgets/decomposition
+Content-Type: application/json
+
+{
+  "budgetId": {{budgetId}},
+  "deptId": "DEPT001",
+  "deptName": "生产一部",
+  "targetReduction": 5000.00,
+  "responsibilityPerson": "张三",
+  "remark": "生产车间减排主责部门，生产线降耗改造"
+}
+
+> {% client.global.set("decId", response.body.data); %}
+
+###
+
+### 3. 登记减排任务（主流程第3步）
+POST {{baseUrl}}/tasks
+Content-Type: application/json
+
+{
+  "taskName": "锅炉低氮燃烧改造项目",
+  "budgetId": {{budgetId}},
+  "decompositionId": {{decId}},
+  "orgId": "ORG001",
+  "orgName": "集团总部",
+  "deptId": "DEPT001",
+  "deptName": "生产一部",
+  "emissionScope": "SCOPE_1",
+  "category": "ENERGY_SAVING",
+  "estimatedReduction": 2000.00,
+  "startDate": "2024-01-15",
+  "endDate": "2024-12-31",
+  "responsibilityPerson": "张三",
+  "description": "对3号锅炉进行低氮燃烧器改造，降低氮氧化物和碳排放",
+  "measureDetail": "更换低氮燃烧器4台，优化空燃比自动控制系统，加装烟气余热回收装置"
+}
+
+> {% client.global.set("taskId", response.body.data); %}
+
+###
+
+### 4. 上报任务进度（主流程第4步）
+POST {{baseUrl}}/tasks/progress
+Content-Type: application/json
+
+{
+  "taskId": {{taskId}},
+  "reportPeriod": "2024-Q2",
+  "periodReduction": 450.00,
+  "progressDesc": "已完成锅炉停炉检修，低氮燃烧器设备已到货并验收，正在搭建安装脚手架，预计下月开始安装",
+  "problemDesc": "受南方雨季影响，现场施工进度略有延迟约1周；部分进口配件清关时间比预期长",
+  "nextPlan": "7月中旬完成燃烧器安装调试，8月份开始试运行，三季度末可实现稳定减排运行",
+  "reporter": "张三"
+}
+
+###
+
+### 5. 查询预警列表（主流程第5步）
+POST {{baseUrl}}/warnings/query
+Content-Type: application/json
+
+{
+  "orgId": "ORG001",
+  "isHandled": false,
+  "pageNum": 1,
+  "pageSize": 10
+}
+
+###
+
+### 6. 查看年度汇总报表（主流程第6步）
+GET {{baseUrl}}/reports/yearly?orgId=ORG001&year=2024
+
+###
+
+###
+### ════════════════════════════════════════
+### 数据持久化验证（重启服务后执行）
+### ════════════════════════════════════════
+###
+
+### 验证1：按组织+年度查询预算
+GET {{baseUrl}}/budgets/org/ORG001/year/2024
+
+###
+
+### 验证2：按排放范围筛选任务
+POST {{baseUrl}}/tasks/query
+Content-Type: application/json
+
+{
+  "orgId": "ORG001",
+  "emissionScope": "SCOPE_1",
+  "pageNum": 1,
+  "pageSize": 10
+}
+
+###
+
+### 验证3：查询任务的进度上报历史
+GET {{baseUrl}}/tasks/{{taskId}}/progress
+
+###
+
+### 验证4：查询预算详情（含使用情况）
+GET {{baseUrl}}/budgets/{{budgetId}}
+
+### 验证5：查询预算执行进度
+GET {{baseUrl}}/budgets/{{budgetId}}/progress
+
+###
+### ════════════════════════════════════════
+### 其他常用接口
+### ════════════════════════════════════════
+###
+
+### 预算分页查询（多条件）
+POST {{baseUrl}}/budgets/query
+Content-Type: application/json
+
+{
+  "orgId": "ORG001",
+  "budgetYear": 2024,
+  "pageNum": 1,
+  "pageSize": 10
+}
+
+###
+
+### 查询预算的分解列表
+GET {{baseUrl}}/budgets/{{budgetId}}/decomposition
+
+###
+
+### 查询预算调整历史
+GET {{baseUrl}}/budgets/{{budgetId}}/adjustments
+
+###
+
+### 任务分页查询（多条件）
+POST {{baseUrl}}/tasks/query
+Content-Type: application/json
+
+{
+  "orgId": "ORG001",
+  "deptId": "DEPT001",
+  "status": "IN_PROGRESS",
+  "pageNum": 1,
+  "pageSize": 10
+}
+
+###
+
+### 查询任务详情（含进度列表+附件）
+GET {{baseUrl}}/tasks/{{taskId}}
+
+###
+
+### 查询任务附件列表
+GET {{baseUrl}}/tasks/{{taskId}}/attachments
+
+###
+
+### 按组织查询未处理预警
+GET {{baseUrl}}/warnings/org/ORG001/unhandled
+
+###
+
+### 处理预警
+POST {{baseUrl}}/warnings/1/handle
+Content-Type: application/json
+
+{
+  "handler": "admin",
+  "handleRemark": "已通知部门负责人加强管控，制定专项减排计划"
+}
+
+###
+
+### 我的待办统计
+GET {{baseUrl}}/todos/statistics?assignee=张三
+
+###
+
+### 我的待办列表
+POST {{baseUrl}}/todos/query
+Content-Type: application/json
+
+{
+  "assignee": "张三",
+  "isDone": false,
+  "pageNum": 1,
+  "pageSize": 10
+}
+
+###
+
+### 我的待审批列表
+GET {{baseUrl}}/approvals/pending?approver=admin
+
+###
+
+### 审批操作（通过/拒绝）
+POST {{baseUrl}}/approvals/process
+Content-Type: application/json
+
+{
+  "approvalType": "BUDGET_APPROVAL",
+  "businessId": 1,
+  "approver": "admin",
+  "action": "APPROVE",
+  "opinion": "方案可行，同意按此预算执行"
+}
+
+###
+
+### 导出年度报告（下载txt格式）
+GET {{baseUrl}}/reports/yearly/export?orgId=ORG001&year=2024
+
+###
+
+### 预算进度明细报表
+POST {{baseUrl}}/reports/budget-progress
+Content-Type: application/json
+
+{
+  "orgId": "ORG001",
+  "budgetYear": 2024
+}

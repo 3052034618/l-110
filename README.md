@@ -34,10 +34,27 @@
 ├── data/                                            ← 【数据库文件】（启动后自动生成，持久化保存）
 ├── pom.xml                                          ← Maven 配置
 ├── start.bat                                        ← Windows 启动脚本
-├── test-flow.ps1                                    ← 一键流程测试脚本
+├── test-flow.bat                                    ← 【CMD一键测试】6接口完整流程
+├── test-flow.ps1                                    ← 【PowerShell一键测试】6接口完整流程
+├── api-test.http                                    ← 【HTTP测试】IDEA/VSCode直接运行
 ├── postman-collection.json                          ← Postman 接口文件（可直接导入）
-└── README.md                                        ← 本文档
+├── QUICKSTART.md                                    ← ⚡ 快速启动卡片（3步启动+6步流程）
+├── API-EXAMPLES.md                                  ← 📘 6接口curl示例+真实返回
+└── README.md                                        ← 本文档（完整说明）
 ```
+
+---
+
+## 📚 快速上手文档索引
+
+| 你想做什么 | 看这个文档 |
+|-----------|------------|
+| 3 分钟快速跑起来 | [QUICKSTART.md](file:///d:/trae-bz/TraeProjects/110/QUICKSTART.md) |
+| 6条接口 **curl命令 + 真实返回示例** | [API-EXAMPLES.md](file:///d:/trae-bz/TraeProjects/110/API-EXAMPLES.md) |
+| 想在 IDEA 或 VSCode 里点按钮直接测试 | 打开 `api-test.http` |
+| 想导入 Postman 批量测试 | 导入 `postman-collection.json` |
+| 想一键自动测试完整流程 | 双击 `test-flow.bat` 或 `test-flow.ps1` |
+| 想看完整详细的设计说明 | 继续往下看 ↓ |
 
 ---
 

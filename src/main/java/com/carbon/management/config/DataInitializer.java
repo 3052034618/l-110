@@ -140,6 +140,7 @@ public class DataInitializer implements CommandLineRunner {
         task1.setOrgName("集团总部");
         task1.setDeptId("DEPT001");
         task1.setDeptName("生产一部");
+        task1.setEmissionScope(EmissionScope.SCOPE_1);
         task1.setCategory(TaskCategory.ENERGY_SAVING);
         task1.setStatus(TaskStatus.IN_PROGRESS);
         task1.setEstimatedReduction(new BigDecimal("1200.0000"));
@@ -162,6 +163,7 @@ public class DataInitializer implements CommandLineRunner {
         task2.setOrgName("集团总部");
         task2.setDeptId("DEPT002");
         task2.setDeptName("能源管理部");
+        task2.setEmissionScope(EmissionScope.SCOPE_2);
         task2.setCategory(TaskCategory.FUEL_SUBSTITUTION);
         task2.setStatus(TaskStatus.IN_PROGRESS);
         task2.setEstimatedReduction(new BigDecimal("800.0000"));
@@ -184,6 +186,7 @@ public class DataInitializer implements CommandLineRunner {
         task3.setOrgName("集团总部");
         task3.setDeptId("DEPT003");
         task3.setDeptName("采购部");
+        task3.setEmissionScope(EmissionScope.SCOPE_3);
         task3.setCategory(TaskCategory.GREEN_PROCUREMENT);
         task3.setStatus(TaskStatus.NOT_STARTED);
         task3.setEstimatedReduction(new BigDecimal("500.0000"));
@@ -206,6 +209,7 @@ public class DataInitializer implements CommandLineRunner {
         task4.setOrgName("集团总部");
         task4.setDeptId("DEPT002");
         task4.setDeptName("能源管理部");
+        task4.setEmissionScope(EmissionScope.SCOPE_2);
         task4.setCategory(TaskCategory.ENERGY_SAVING);
         task4.setStatus(TaskStatus.COMPLETED);
         task4.setEstimatedReduction(new BigDecimal("300.0000"));

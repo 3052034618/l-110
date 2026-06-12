@@ -1,5 +1,6 @@
 package com.carbon.management.vo;
 
+import com.carbon.management.common.enums.EmissionScope;
 import com.carbon.management.common.enums.TaskCategory;
 import com.carbon.management.common.enums.TaskStatus;
 import lombok.Data;
@@ -21,6 +22,8 @@ public class TaskVO {
     private String orgName;
     private String deptId;
     private String deptName;
+    private EmissionScope emissionScope;
+    private String emissionScopeDesc;
     private TaskCategory category;
     private String categoryDesc;
     private TaskStatus status;

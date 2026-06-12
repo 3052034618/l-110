@@ -1,5 +1,6 @@
 package com.carbon.management.entity;
 
+import com.carbon.management.common.enums.EmissionScope;
 import com.carbon.management.common.enums.TaskCategory;
 import com.carbon.management.common.enums.TaskStatus;
 import jakarta.persistence.*;
@@ -42,6 +43,10 @@ public class EmissionTask extends BaseEntity {
 
     @Column(name = "dept_name", nullable = false, length = 128)
     private String deptName;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "emission_scope", length = 32)
+    private EmissionScope emissionScope;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "category", nullable = false, length = 32)

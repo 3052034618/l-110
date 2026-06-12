@@ -1,5 +1,6 @@
 package com.carbon.management.dto;
 
+import com.carbon.management.common.enums.EmissionScope;
 import com.carbon.management.common.enums.TaskCategory;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -29,6 +30,8 @@ public class TaskCreateDTO {
 
     @NotBlank(message = "部门名称不能为空")
     private String deptName;
+
+    private EmissionScope emissionScope;
 
     @NotNull(message = "任务类别不能为空")
     private TaskCategory category;
